@@ -37,10 +37,10 @@ const navItems = [
 
 export default function Dashboard() {
   const navigate = useNavigate()
-  const { savedDestination } = useSavedDestination()
+  const { savedDestination, removeDestination } = useSavedDestination()
   const [sidebarOpen, setSidebarOpen] = useState(false)
   const [visible, setVisible] = useState(false)
-  const { currentUser } = useAuth() 
+  const { currentUser } = useAuth()
 
   useEffect(() => {
     const t = setTimeout(() => setVisible(true), 80)
@@ -48,14 +48,13 @@ export default function Dashboard() {
   }, [])
 
   const fade = (delay = '') =>
-    `transition-all duration-700 ${delay} ${
-      visible
-        ? 'opacity-100 translate-y-0'
-        : 'opacity-0 translate-y-5'
+    `transition-all duration-700 ${delay} ${visible
+      ? 'opacity-100 translate-y-0'
+      : 'opacity-0 translate-y-5'
     }`
 
   function handleLogout() {
-    navigate('/login' , {replace: true})
+    navigate('/login', { replace: true })
   }
 
   return (
@@ -100,10 +99,9 @@ export default function Dashboard() {
               end={item.end}
               onClick={() => setSidebarOpen(false)}
               className={({ isActive }) =>
-                `flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-all duration-200 ${
-                  isActive
-                    ? 'bg-[#F59E0B]/10 text-[#F59E0B] border border-[#F59E0B]/20'
-                    : 'text-slate-400 hover:text-white hover:bg-slate-800'
+                `flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-all duration-200 ${isActive
+                  ? 'bg-[#F59E0B]/10 text-[#F59E0B] border border-[#F59E0B]/20'
+                  : 'text-slate-400 hover:text-white hover:bg-slate-800'
                 }`
               }
             >
@@ -169,20 +167,40 @@ export default function Dashboard() {
           ) : (
             <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-8 ">
               {savedDestination.map((destination) => (
-                <Link
+                <div
                   key={destination.id}
-                  to={`/destinations/${destination.id}`}
-                  className="w-full flex justify-center hover:-translate-y-2 transition-all duration-300"
+                  className="relative"
                 >
-                  <DestinationCard
-                    image={destination.image}
-                    title={destination.title}
-                    location={destination.location}
-                    price={destination.price}
-                    rating={destination.rating}
-                  />
-                </Link>
+                  <Link
+                    to={`/destinations/${destination.id}`}
+                    className="w-full flex justify-center hover:-translate-y-2 transition-all duration-300"
+                  >
+                    <DestinationCard
+                      image={destination.image}
+                      title={destination.title}
+                      location={destination.location}
+                      price={destination.price}
+                      rating={destination.rating}
+                    />
+                  </Link>
+
+                  <button
+                    onClick={() => removeDestination(destination.id)}
+                    className="
+                    absolute top-3 right-3
+                   bg-red-500 hover:bg-red-600
+                   text-white text-sm
+                    px-3 py-2 rounded-lg
+                    transition-all duration-300
+                    cursor-pointer
+                    shadow-lg
+                    "
+                  >
+                    Remove
+                  </button>
+                </div>
               ))}
+
             </div>
           )}
         </div>
